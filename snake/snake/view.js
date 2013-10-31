@@ -30,21 +30,23 @@ YUI.add('snake', function(Y) {
         },
 
         renderFood: function() {
-            var container = this.get('container');
-            var food = Y.Node.create('<p class="designer_food"></p>');
-            var snake = container.all('span');
-            var top = snake.getStyle('top');
-            var left = snake.getStyle('left');
+            var container = this.get('container'),
+                food = Y.Node.create('<p class="designer_food"></p>'),
+                snake = container.all('span'),
+                top = snake.getStyle('top'),
+                left = snake.getStyle('left'),
+                x,
+                y;
 
             do {
-                var x = this.createX();
-                var y = this.createY();
+                x = this.createX();
+                y = this.createY();
             } while (this.checkPosition(x, y,0));
 
             food.setStyles({
                 top: y,
                 left: x
-            })
+            });
             Y.one('body').append(food);
         },
 
@@ -79,18 +81,18 @@ YUI.add('snake', function(Y) {
                         break;
                     }
                 }
-            }, this)
+            }, this);
 
         },
 
         move: function() {
             clearTimeout(timeOut);
-            var container = this.get('container');
-            var snake = container.all('span');
-            var food = Y.one('.designer_food');
-            var speed = this.get('speed');
-            var x = this.get('x');
-            var y = this.get('y');
+            var container = this.get('container'),
+                snake = container.all('span'),
+                food = Y.one('.designer_food'),
+                speed = this.get('speed'),
+                x = this.get('x'),
+                y = this.get('y');
             
             if(!this.get('eating')){
                 container.all('.designer_snake:last-child').remove();
@@ -98,8 +100,8 @@ YUI.add('snake', function(Y) {
 
             var body = this.renderBody();
             var header = container.all('.designer_snake:first-child');
-            var t = parseInt(header.getStyle('top')) + y;
-            var l = parseInt(header.getStyle('left')) + x;
+            var t = parseInt(header.getStyle('top'), 10) + y;
+            var l = parseInt(header.getStyle('left'), 10) + x;
             body.setStyles({
                 top: t,
                 left: l
@@ -110,27 +112,28 @@ YUI.add('snake', function(Y) {
             
             if(this.checkPosition(l,t,1)){
                 this.lose();
-            };
+            }
 
             var instance = this;
+
             timeOut = setTimeout(function() {
                 instance.move();
-            }, 800);
+            }, speed);
 
         },
         checkFringe: function(body) {
-            var top = parseInt(body.getStyle('top'));
-            var left = parseInt(body.getStyle('left'));
+            var top = parseInt(body.getStyle('top'), 10);
+            var left = parseInt(body.getStyle('left'), 10);
             if(top < 0 || top > 360 || left < 0 || left > 760) {
                 this.lose();
             }
         },
         eatFood: function(body,food) {
-            var top = parseInt(body.getStyle('top'));
-            var left = parseInt(body.getStyle('left'));
+            var top = parseInt(body.getStyle('top'), 10);
+                left = parseInt(body.getStyle('left'), 10),
+                food_top =parseInt(food.getStyle('top'), 10),
+                food_left =parseInt(food.getStyle('left'), 10);
 
-            var food_top =parseInt(food.getStyle('top'));
-            var food_left =parseInt(food.getStyle('left'));
             if(top == food_top && left == food_left){
                 this.set('eating',true);
                 var count = this.get('count');
@@ -142,11 +145,12 @@ YUI.add('snake', function(Y) {
                 this.set('eating',false);
             }
         },
+
         checkPosition: function(x, y, i) {
             var container = this.get('container');
             var snake = container.all('span');
             for(var i = i; i < snake.size(); i++) {
-                if(parseInt(snake._nodes[i].offsetLeft) == x && parseInt(snake._nodes[i].offsetTop) == y) {
+                if(parseInt(snake._nodes[i].offsetLeft, 10) == x && parseInt(snake._nodes[i].offsetTop, 10) == y) {
                     return true;
                 }
             }
@@ -170,7 +174,9 @@ YUI.add('snake', function(Y) {
     }, {
         ATTRS: {
             container: null,
-            speed: 200,
+            speed: {
+                value: 240
+            },
             x: {
                 value: 0
             },
